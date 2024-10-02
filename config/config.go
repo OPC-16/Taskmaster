@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -16,8 +17,11 @@ type config struct {
 
 // reads the configuration from the environment variables
 func Load() (*config, error) {
-   // load .env file if it exists
-   _ = godotenv.Load()
+   // load .env file
+   err := godotenv.Load()
+   if err != nil {
+      log.Fatal("Error loading .env file")
+   }
 
    cfg := &config{
       ServerAddress: getEnv("SERVER_ADDRESS", ":7438"),
@@ -26,7 +30,7 @@ func Load() (*config, error) {
    }
 
    if cfg.JWTSecret == "" {
-      return nil, fmt.Errorf("JWT_SECRET must be set")
+      return nil, fmt.Errorf("JWT_SECRET must be set in the environment")
    }
 
    return cfg, nil
