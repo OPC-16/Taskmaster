@@ -30,12 +30,15 @@ func main() {
 
    // Initialize repositories
    userRepo := repositories.NewUserRepository(db)
+   taskRepo := repositories.NewTaskRepository(db)
 
    // Initialize services
    userService := services.NewUserService(userRepo)
+   taskService := services.NewTaskService(taskRepo)
 
    // Initialize handlers
    userHandler := handlers.NewUserHandler(userService, cfg.JWTSecret)
+   taskHandler := handlers.NewTaskHandler(taskService)
 
    // Initialize Echo instance
    e := echo.New()
@@ -50,7 +53,7 @@ func main() {
    })
 
    // Routes
-   v1.SetupRoutes(e, userHandler, cfg.JWTSecret)
+   v1.SetupRoutes(e, userHandler, taskHandler, cfg.JWTSecret)
 
 
    // start the server

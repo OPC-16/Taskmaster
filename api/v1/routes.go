@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func SetupRoutes(e *echo.Echo, userHandler *handlers.UserHandler, jwtSecret string) {
+func SetupRoutes(e *echo.Echo, userHandler *handlers.UserHandler, taskHandler *handlers.TaskHandler, jwtSecret string) {
    v1 := e.Group("/api/v1")
 
    // User routes (public)
@@ -36,4 +36,7 @@ func SetupRoutes(e *echo.Echo, userHandler *handlers.UserHandler, jwtSecret stri
    }))
 
    restricted_user.GET("/profile", userHandler.GetProfile)
+
+   restricted_tasks.POST("", taskHandler.CreateTask)
+   restricted_tasks.GET("", taskHandler.GetTasks)
 }
