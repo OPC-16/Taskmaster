@@ -63,3 +63,21 @@ func (h *UserHandler) Login(c echo.Context) error {
 
    return c.JSON(http.StatusOK, map[string]string{ "token": token })
 }
+
+// retrieves the user's profile
+func (h *UserHandler) GetProfile(c echo.Context) error {
+   // TODO: Implement get profile logic
+   return c.JSON(http.StatusNotImplemented, map[string]string{ "message": "get profile not implemented yet" })
+}
+
+// updates the user's profile
+func (h *UserHandler) UpdateProfile(c echo.Context) error {
+   // TODO: Implement update profile logic
+   return c.JSON(http.StatusNotImplemented, map[string]string{ "message": "update profile not implemented yet" })
+}
+
+// deletes a user account
+func (h *UserHandler) DeleteUser(c echo.Context) error {
+   // TODO: Implement delete user logic
+   return c.JSON(http.StatusNotImplemented, map[string]string{ "message": "delete user not implemented yet" })
+}

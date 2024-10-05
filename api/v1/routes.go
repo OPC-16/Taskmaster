@@ -17,11 +17,21 @@ func SetupRoutes(e *echo.Echo, userHandler *handlers.UserHandler, jwtSecret stri
    v1.POST("/login", userHandler.Login)
 
    // Restricted routes (requires JWT)
-   restricted := v1.Group("/tasks")
-   restricted.Use(echojwt.WithConfig(echojwt.Config{
+   restricted_tasks := v1.Group("/tasks")
+   restricted_tasks.Use(echojwt.WithConfig(echojwt.Config{
       SigningKey: []byte(jwtSecret),
       NewClaimsFunc: func(c echo.Context) jwt.Claims {
          return new(auth.Claims)
       },
    }))
+
+   restricted_user := v1.Group("/user")
+   restricted_user.Use(echojwt.WithConfig(echojwt.Config{
+      SigningKey: []byte(jwtSecret),
+      NewClaimsFunc: func(c echo.Context) jwt.Claims {
+         return new(auth.Claims)
+      },
+   }))
+
+   restricted_user.GET("/profile", userHandler.GetProfile)
 }
