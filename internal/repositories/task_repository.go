@@ -21,8 +21,8 @@ func NewTaskRepository(db *sql.DB) TaskRepository {
 }
 
 func (r *taskRepository) CreateTask(ctx context.Context, task *models.Task) error {
-   query := "INSERT INTO tasks (title, description, status, priority, deadline, user_id) VALUES (?, ?, ?, ?, ?, ?)"
-   _, err := r.db.ExecContext(ctx, query, task.Title, task.Description, task.Status, task.Priority, task.Deadline, task.UserID)
+   query := "INSERT INTO tasks (user_id, title, description, category, deadline, priority, status) VALUES (?, ?, ?, ?, ?, ?, ?)"
+   _, err := r.db.ExecContext(ctx, query, task.UserID, task.Title, task.Description, task.Category, task.Deadline, task.Priority, task.Status)
    return err
 }
 
