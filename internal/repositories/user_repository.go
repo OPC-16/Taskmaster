@@ -12,9 +12,8 @@ import (
 
 type UserRepository interface {
    CreateUser(ctx context.Context, user *models.User) error
-   GetUserByID(ctx context.Context, id int64) (*models.User, error)
-   GetUserByUsername(ctx context.Context, username string) (*models.User, error)
-   AuthenticateUser(ctx context.Context, username, password string) (*models.User, error)
+   GetUserByID(ctx context.Context, id int64) (*models.User, error) // Returns user without its hashed password
+   GetUserByUsername(ctx context.Context, username string) (*models.User, error) // Returns user with all of its fields (even incluing its hashed password)
 }
 
 type userRepository struct {
@@ -64,6 +63,7 @@ func (r *userRepository) GetUserByID(ctx context.Context, id int64) (*models.Use
    return user, nil
 }
 
+// Returns user with all of its fields (even incluing its hashed password)
 func (r *userRepository) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
    user := &models.User{}
 
@@ -76,20 +76,5 @@ func (r *userRepository) GetUserByUsername(ctx context.Context, username string)
       return nil, fmt.Errorf("failed to get user: %w", err)
    }
 
-   return user, nil
-}
-
-func (r *userRepository) AuthenticateUser(ctx context.Context, username, password string) (*models.User, error) {
-   user, err := r.GetUserByUsername(ctx, username)
-   if err != nil {
-      return nil, err
-   }
-
-   err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-   if err != nil {
-      return nil, fmt.Errorf("invalid password")
-   }
-
-   user.Password = ""  // Clear the password field before returning
    return user, nil
 }
