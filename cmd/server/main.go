@@ -35,7 +35,7 @@ func main() {
    userService := services.NewUserService(userRepo)
 
    // Initialize handlers
-   userHandler := handlers.NewUserHandler(userService)
+   userHandler := handlers.NewUserHandler(userService, cfg.JWTSecret)
 
    // Initialize Echo instance
    e := echo.New()
@@ -50,7 +50,7 @@ func main() {
    })
 
    // Routes
-   v1.SetupRoutes(e, userHandler)
+   v1.SetupRoutes(e, userHandler, cfg.JWTSecret)
 
 
    // start the server

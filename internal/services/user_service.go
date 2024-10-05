@@ -6,10 +6,13 @@ import (
 
 	"taskmaster/internal/models"
 	"taskmaster/internal/repositories"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {
    CreateUser(ctx context.Context, user *models.User) error
+   Authenticate(ctx context.Context, username, password string) (*models.User, error)
 }
 
 type userService struct {
@@ -34,4 +37,18 @@ func (s *userService) CreateUser(ctx context.Context, user *models.User) error {
 
    // Call the repository to create the user and storing it in db
    return s.userRepo.CreateUser(ctx, user)
+}
+
+func (s *userService) Authenticate(ctx context.Context, username, password string) (*models.User, error) {
+   user, err := s.userRepo.GetUserByUsername(ctx, username)
+   if err != nil {
+      return nil, err
+   }
+
+   if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+      return nil, errors.New("invalid credentials")
+   }
+
+   user.Password = ""  // clear the hashed password before returning
+   return user, nil
 }

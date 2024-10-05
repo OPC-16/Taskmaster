@@ -12,6 +12,19 @@ type Claims struct {
    jwt.RegisteredClaims
 }
 
+// it implements the jwt.Claims interface
+func (c Claims) Valid() error {
+   if c.ExpiresAt == nil || c.ExpiresAt.Time.Before(time.Now()) {
+      return errors.New("token is expired")
+   }
+
+   if c.UserID == 0 {
+      return errors.New("must provide user id")
+   }
+
+   return nil
+}
+
 func GenerateToken(userID int64, secretKey string, expirationTime time.Duration) (string, error) {
    claims := &Claims{
       UserID: userID,
