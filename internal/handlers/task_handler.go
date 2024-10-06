@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"taskmaster/internal/models"
 	"taskmaster/internal/services"
@@ -48,4 +49,21 @@ func (h *TaskHandler) GetTasks(c echo.Context) error {
    }
 
    return c.JSON(http.StatusOK, tasks)
+}
+
+func (h *TaskHandler) DeleteTask(c echo.Context) error {
+   claims := c.Get("user").(*jwt.Token).Claims.(*auth.Claims)
+   userID := claims.UserID
+
+   taskID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+   if err != nil {
+      return c.JSON(http.StatusBadRequest, map[string]string{ "error": "Invalid task id"})
+   }
+
+   err = h.taskService.DeleteTask(c.Request().Context(), taskID, userID)
+   if err != nil {
+      return c.JSON(http.StatusInternalServerError, map[string]string{ "error": err.Error() })
+   }
+
+   return c.NoContent(http.StatusNoContent)
 }

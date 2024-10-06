@@ -10,6 +10,7 @@ import (
 type TaskRepository interface {
    CreateTask(ctx context.Context, task *models.Task) error
    GetTasksByUserID(ctx context.Context, userID int64) ([]models.Task, error)
+   DeleteTask(ctx context.Context, taskID, userID int64) error
 }
 
 type taskRepository struct {
@@ -45,4 +46,10 @@ func (r *taskRepository) GetTasksByUserID(ctx context.Context, userID int64) ([]
    }
 
    return tasks, nil
+}
+
+func (r *taskRepository) DeleteTask(ctx context.Context, taskID, userID int64) error {
+   query := "DELETE FROM tasks WHERE id = ? AND user_id = ?"
+   _, err := r.db.ExecContext(ctx, query, taskID, userID)
+   return err
 }

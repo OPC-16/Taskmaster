@@ -11,6 +11,7 @@ import (
 type TaskService interface {
    CreateTask(ctx context.Context, task *models.Task) error
    GetTasksByUserID(ctx context.Context, userID int64) ([]models.Task, error)
+   DeleteTask(ctx context.Context, taskID int64, userID int64) error
 }
 
 type taskService struct {
@@ -38,4 +39,13 @@ func (s *taskService) GetTasksByUserID(ctx context.Context, userID int64) ([]mod
    }
 
    return tasks, nil
+}
+
+func (s *taskService) DeleteTask(ctx context.Context, taskID, userID int64) error {
+   err := s.taskRepo.DeleteTask(ctx, taskID, userID)
+   if err != nil {
+      return err
+   }
+
+   return nil
 }

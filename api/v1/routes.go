@@ -39,4 +39,5 @@ func SetupRoutes(e *echo.Echo, userHandler *handlers.UserHandler, taskHandler *h
 
    restricted_tasks.POST("", taskHandler.CreateTask)
    restricted_tasks.GET("", taskHandler.GetTasks)
+   restricted_tasks.DELETE("/:id", taskHandler.DeleteTask)
 }
