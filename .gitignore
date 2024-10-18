@@ -1,3 +1,4 @@
 .env
 taskmaster.db
 taskmaster
+logs.log
