@@ -2,10 +2,10 @@ package config
 
 import (
 	"fmt"
-	"log"
+	// "log"
 	"os"
 
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 )
 
 // config holds all the configuration for the application
@@ -18,10 +18,10 @@ type config struct {
 // reads the configuration from the environment variables
 func Load() (*config, error) {
    // load .env file
-   err := godotenv.Load()
-   if err != nil {
-      log.Fatal("Error loading .env file")
-   }
+   // err := godotenv.Load()
+   // if err != nil {
+   //    log.Fatal("Error loading .env file")
+   // }
 
    cfg := &config{
       ServerAddress: getEnv("SERVER_ADDRESS", ":7438"),
