@@ -8,6 +8,8 @@ import (
 	"taskmaster/internal/repositories"
 
 	"golang.org/x/crypto/bcrypt"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 type UserService interface {
@@ -17,10 +19,16 @@ type UserService interface {
 
 type userService struct {
    userRepo repositories.UserRepository
+   logger   zerolog.Logger
 }
 
 func NewUserService(repo repositories.UserRepository) UserService {
-   return &userService{userRepo: repo}
+   serviceLogger := log.With().Str("component", "user_service").Logger()
+
+   return &userService{
+      userRepo: repo,
+      logger: serviceLogger,
+   }
 }
 
 func (s *userService) CreateUser(ctx context.Context, user *models.User) error {
@@ -34,6 +42,8 @@ func (s *userService) CreateUser(ctx context.Context, user *models.User) error {
    if user.Password == "" {
       return errors.New("Password is required")
    }
+
+   s.logger.Info().Msg("CreateUser called")
 
    // Call the repository to create the user and storing it in db
    return s.userRepo.CreateUser(ctx, user)

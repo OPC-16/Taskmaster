@@ -5,6 +5,9 @@ import (
 	"database/sql"
 
 	"taskmaster/internal/models"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 type TaskRepository interface {
@@ -14,16 +17,24 @@ type TaskRepository interface {
 }
 
 type taskRepository struct {
-   db *sql.DB
+   db     *sql.DB
+   logger zerolog.Logger
 }
 
 func NewTaskRepository(db *sql.DB) TaskRepository {
-   return &taskRepository{db: db}
+   repoLogger := log.With().Str("component", "task_repository").Caller().Logger()
+   return &taskRepository{
+      db: db,
+      logger: repoLogger,
+   }
 }
 
 func (r *taskRepository) CreateTask(ctx context.Context, task *models.Task) error {
    query := "INSERT INTO tasks (user_id, title, description, category, deadline, priority, status) VALUES (?, ?, ?, ?, ?, ?, ?)"
    _, err := r.db.ExecContext(ctx, query, task.UserID, task.Title, task.Description, task.Category, task.Deadline, task.Priority, task.Status)
+   if err != nil {
+      r.logger.Err(err).Send()
+   }
    return err
 }
 

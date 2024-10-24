@@ -10,14 +10,21 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 type TaskHandler struct {
    taskService services.TaskService
+   logger      zerolog.Logger
 }
 
 func NewTaskHandler(taskService services.TaskService) *TaskHandler {
-   return &TaskHandler{taskService: taskService}
+   handlerLogger := log.With().Str("component", "task_handler").Caller().Logger()
+   return &TaskHandler{
+      taskService: taskService,
+      logger: handlerLogger,
+   }
 }
 
 func (h *TaskHandler) CreateTask(c echo.Context) error {
@@ -26,6 +33,7 @@ func (h *TaskHandler) CreateTask(c echo.Context) error {
    
    var task models.Task
    if err := c.Bind(&task); err != nil {
+      h.logger.Err(err).Msg("Invalid request payload")
       return c.JSON(http.StatusBadRequest, map[string]string{ "error": "Invalid request payload" })
    }
 
@@ -33,6 +41,7 @@ func (h *TaskHandler) CreateTask(c echo.Context) error {
 
    err := h.taskService.CreateTask(c.Request().Context(), &task)
    if err != nil {
+      h.logger.Err(err)
       return c.JSON(http.StatusInternalServerError, map[string]string{ "error": err.Error() })
    }
 

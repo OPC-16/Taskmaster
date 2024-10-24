@@ -40,6 +40,8 @@ func (h *UserHandler) Register(c echo.Context) error {
 
 // authenticates the user and returns the JWT
 func (h *UserHandler) Login(c echo.Context) error {
+   c.Logger().Info("User login attempt")
+
    var loginRequest struct {
       Username string `json:"username"`
       Password string `json:"password"`
@@ -61,6 +63,7 @@ func (h *UserHandler) Login(c echo.Context) error {
       return c.JSON(http.StatusInternalServerError, map[string]string{ "error": "Failed to generate token" })
    }
 
+   c.Logger().Info("User logged in successfully")
    return c.JSON(http.StatusOK, map[string]string{ "token": token })
 }
 

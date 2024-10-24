@@ -6,6 +6,9 @@ import (
 
 	"taskmaster/internal/models"
 	"taskmaster/internal/repositories"
+
+   "github.com/rs/zerolog"
+   "github.com/rs/zerolog/log"
 )
 
 type TaskService interface {
@@ -16,16 +19,23 @@ type TaskService interface {
 
 type taskService struct {
    taskRepo repositories.TaskRepository
+   logger   zerolog.Logger
 }
 
 func NewTaskService(repo repositories.TaskRepository) TaskService {
-   return &taskService{taskRepo: repo}
+   serviceLogger := log.With().Str("component", "task_service").Caller().Logger()
+   return &taskService{
+      taskRepo: repo,
+      logger: serviceLogger,
+   }
 }
 
 func (s *taskService) CreateTask(ctx context.Context, task *models.Task) error {
    // Business rules go here, such as checking task validity
    if task.Title == "" {
-      return errors.New("Task title is required")
+      err := "Task title is required"
+      s.logger.Error().Msg(err)
+      return errors.New(err)
    }
 
    // Call the repository to save the task

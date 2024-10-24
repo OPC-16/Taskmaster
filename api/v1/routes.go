@@ -7,6 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 )
 
 func SetupRoutes(e *echo.Echo, userHandler *handlers.UserHandler, taskHandler *handlers.TaskHandler, jwtSecret string) {
@@ -40,4 +41,7 @@ func SetupRoutes(e *echo.Echo, userHandler *handlers.UserHandler, taskHandler *h
    restricted_tasks.POST("", taskHandler.CreateTask)
    restricted_tasks.GET("", taskHandler.GetTasks)
    restricted_tasks.DELETE("/:id", taskHandler.DeleteTask)
+
+   routeLogger := log.With().Str("component", "routes").Caller().Logger()
+   routeLogger.Info().Msg("Routes configured successfully")
 }

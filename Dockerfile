@@ -31,7 +31,7 @@ COPY --from=build-stage /app/.env .
 # install sqlite3 database
 RUN apk add --no-cache sqlite
 
-EXPOSE 7438
+EXPOSE 8000
 
 # command to run the application
 CMD ["./taskmaster"]
