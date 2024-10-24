@@ -38,6 +38,7 @@ func main() {
    // Initialize configuration
    cfg, err := config.Load()
    if err != nil {
+      fmt.Println(err)
       log.Fatal().Err(err).Msg("Failed to load configuration")
    }
 

@@ -24,7 +24,7 @@ func Load() (*config, error) {
    // }
 
    cfg := &config{
-      ServerAddress: getEnv("SERVER_ADDRESS", ":7438"),
+      ServerAddress: getEnv("SERVER_ADDRESS", ":8000"),
       DatabasePath: getEnv("DATABASE_PATH", "./taskmaster.db"),
       JWTSecret: getEnv("JWT_SECRET", ""),
    }
